@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Search,
@@ -203,7 +202,7 @@ function ProductCard({ product, onOpen, favorites, onFavorite }) {
   );
 }
 
-function ProductModal({ product, onClose }) {
+function ProductModal({ product, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -324,18 +323,17 @@ function ProductModal({ product, onClose }) {
           <button
             className="primary-button modal-action"
             disabled={stock === 0}
-            onClick={() =>
-              alert(
-                "عرض التفاصيل يعمل حاليًا. سنربط السلة وتسجيل الدخول في الخطوة التالية."
-              )
-            }
+            onClick={() => {
+              onAddToCart(product, safeQuantity);
+              onClose();
+            }}
           >
             <ShoppingBag size={18} />
-            إضافة للسلة — قريبًا
+            إضافة للسلة
           </button>
 
           <p className="modal-note">
-            السلة والدفع لم يتم تفعيلهما في هذه المرحلة.
+            يمكنك مراجعة المنتجات والكميات المضافة إلى سلتك.
           </p>
         </div>
       </section>
@@ -354,6 +352,14 @@ function App() {
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("newest");
   const [favorites, setFavorites] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+  try {
+    const savedCart = localStorage.getItem("marketplace-cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  } catch {
+    return [];
+  }
+});
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -403,6 +409,16 @@ function App() {
 
     return () => controller.abort();
   }, [loadData]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        "marketplace-cart",
+        JSON.stringify(cartItems)
+      );
+    } catch (storageError) {
+      console.error("تعذر حفظ السلة:", storageError);
+    }
+  }, [cartItems]);
 
   const filteredProducts = useMemo(() => {
     let list = [...products];
@@ -474,6 +490,76 @@ function App() {
         ? current.filter((item) => item !== id)
         : [...current, id]
     );
+  };
+
+  const addToCart = (product, quantity) => {
+    const stock = Math.max(0, Number(product.stock) || 0);
+    const requestedQuantity = Math.max(
+      1,
+      Math.floor(Number(quantity) || 1)
+    );
+
+    if (stock === 0) {
+      alert("المنتج غير متوفر في المخزون.");
+      return;
+    }
+
+    setCartItems((current) => {
+      const existingItem = current.find(
+        (item) => item.id === product.id
+      );
+
+      if (existingItem) {
+        const newQuantity = Math.min(
+          Number(existingItem.quantity || 0) + requestedQuantity,
+          stock
+        );
+
+        return current.map((item) =>
+          item.id === product.id
+            ? {
+                ...item,
+                quantity: newQuantity,
+                stock,
+                price: Number(product.price) || 0,
+                name: product.name,
+              }
+            : item
+        );
+      }
+
+      return [
+        ...current,
+        {
+          id: product.id,
+          name: product.name,
+          price: Number(product.price) || 0,
+          quantity: Math.min(requestedQuantity, stock),
+          stock,
+        },
+      ];
+    });
+
+    alert("تمت إضافة المنتج إلى السلة.");
+  };
+
+  const openCart = () => {
+    if (cartItems.length === 0) {
+      alert("سلتك فارغة حاليًا.");
+      return;
+    }
+
+    const cartSummary = cartItems
+      .map(
+        (item) => `${item.name} — ${item.quantity} × ${formatPrice(item.price)}`
+      )
+      .join("\n");
+    const total = cartItems.reduce(
+      (sum, item) => sum + Number(item.price) * Number(item.quantity),
+      0
+    );
+
+    alert(`محتويات السلة:\n\n${cartSummary}\n\nالإجمالي: ${formatPrice(total)}`);
   };
 
   const resetFilters = () => {
@@ -588,14 +674,18 @@ function App() {
 
             <button
               className="header-cart"
-              onClick={() =>
-                alert(
-                  "ميزة السلة ستُفعّل بعد ربط تسجيل الدخول وواجهات السلة."
-                )
-              }
+              onClick={openCart}
             >
               <ShoppingBag size={17} />
               <span>سلتي</span>
+              {cartItems.length > 0 && (
+                <span className="header-count">
+                  {cartItems.reduce(
+                    (sum, item) => sum + Number(item.quantity || 0),
+                    0
+                  )}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -983,8 +1073,7 @@ function App() {
                 <Search size={30} />
               </span>
 
-              <h3>ملقيناش منتجات مطابقة</h3>
-              <p>جرّب كلمة بحث مختلفة أو غيّر الفلاتر.</p>
+              <h3>ملقيناش منتجات مطابقة</h3>              <p>جرّب كلمة بحث مختلفة أو غيّر الفلاتر.</p>
 
               <button
                 className="primary-button"
@@ -1073,6 +1162,7 @@ function App() {
         key={selectedProduct?.id ?? "no-product"}
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
+        onAddToCart={addToCart}
       />
     </div>
   );
