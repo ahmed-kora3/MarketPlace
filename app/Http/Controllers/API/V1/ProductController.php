@@ -33,6 +33,11 @@ class ProductController extends Controller
     public function show(int $id): JsonResponse
     {
         $product = $this->productService->showProduct($id);
+
+        if ($product->is_archived) {
+            return $this->errorResponse('Product not found.', 404);
+        }
+
         return $this->successResponse(new ProductResource($product));
     }
 

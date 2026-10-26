@@ -1,0 +1,114 @@
+/*
+ * ============================================================
+ * Design Tokens — حِرفة Handmade Market
+ * All CSS custom properties live here.
+ * Colours, typography, spacing, shadows, and breakpoints.
+ * ============================================================
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+  /* ── Brand colours ── */
+  --color-green-darkest:  #1a2e22;
+  --color-green-dark:     #21382d;
+  --color-green:          #304b3d;
+  --color-green-mid:      #3d5e4d;
+  --color-green-light:    #eaf0e8;
+  --color-green-pale:     #f3f7f2;
+
+  --color-gold:           #c5a46a;
+  --color-gold-dark:      #aa8751;
+  --color-gold-pale:      #f5eedf;
+
+  --color-cream:          #fcfaf6;
+  --color-cream-dark:     #f6f3ec;
+  --color-white:          #ffffff;
+
+  /* ── Text colours ── */
+  --color-text-primary:   #272d27;
+  --color-text-secondary: #64675e;
+  --color-text-muted:     #91928a;
+  --color-text-faint:     #b4b0a7;
+  --color-text-on-dark:   #f3eee3;
+  --color-text-on-dark-2: #c4c7bb;
+
+  /* ── Semantic colours ── */
+  --color-border:         #eae6dd;
+  --color-border-dark:    #d5d0c5;
+  --color-surface:        #ffffff;
+  --color-surface-raised: #f9f7f1;
+
+  --color-success:        #4a8c5c;
+  --color-success-bg:     #e8f5ec;
+  --color-warning:        #b07d2a;
+  --color-warning-bg:     #fef6e4;
+  --color-error:          #a23e3e;
+  --color-error-bg:       #fff7f4;
+  --color-error-border:   #ebd3cc;
+
+  /* ── Typography ── */
+  --font-arabic:          'Cairo', sans-serif;
+  --font-display:         'Playfair Display', serif;
+
+  --text-xs:    10px;
+  --text-sm:    11px;
+  --text-base:  13px;
+  --text-md:    15px;
+  --text-lg:    18px;
+  --text-xl:    22px;
+  --text-2xl:   28px;
+  --text-3xl:   36px;
+  --text-4xl:   clamp(32px, 4.5vw, 56px);
+
+  --leading-tight:  1.35;
+  --leading-normal: 1.7;
+  --leading-loose:  2.1;
+
+  --weight-normal:  400;
+  --weight-medium:  500;
+  --weight-semi:    600;
+  --weight-bold:    700;
+  --weight-black:   800;
+
+  /* ── Spacing ── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+
+  /* ── Radii ── */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 2px 8px rgba(44, 56, 43, .06);
+  --shadow-md:  0 8px 24px rgba(44, 56, 43, .09);
+  --shadow-lg:  0 16px 48px rgba(44, 56, 43, .12);
+  --shadow-xl:  0 28px 72px rgba(44, 56, 43, .15);
+
+  /* ── Layout ── */
+  --max-width:     1280px;
+  --content-width: 1160px;
+  --header-height: 80px;
+
+  /* ── Z-index ── */
+  --z-header:  30;
+  --z-dropdown: 40;
+  --z-modal:   100;
+
+  /* ── Transitions ── */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.4s ease;
+}
